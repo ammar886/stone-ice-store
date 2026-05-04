@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Northwind Goods — Home</title>
+    <meta name="description" content="Thoughtful everyday goods for calm spaces." />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <header class="site-header">
+        <div class="wrap inner">
+          <a class="logo" href="index.html">Northwind Goods</a>
+          <nav class="nav" aria-label="Primary">
+            <a href="index.html" data-nav>Home</a>
+            <a href="products.html" data-nav>Products</a>
+            <a href="about.html" data-nav>About</a>
+          </nav>
+        </div>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="wrap">
+            <h1>Quiet goods for everyday rituals.</h1>
+            <p>
+              Small-batch homeware and desk essentials chosen for material honesty and
+              long use.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="products.html">Shop all</a>
+              <a class="btn" href="about.html">Our story</a>
+            </div>
+          </div>
+        </section>
+
+        <div class="wrap">
+          <h2 class="section-title">Featured</h2>
+          <div id="featured-grid" class="product-grid" aria-live="polite"></div>
+        </div>
+      </main>
+
+      <footer class="site-footer">
+        <div class="wrap inner">
+          <span>© Northwind Goods</span>
+          <a href="about.html">Contact</a>
+        </div>
+      </footer>
+    </div>
+
+    <script src="js/products.js"></script>
+    <script src="js/layout.js"></script>
+    <script>
+      (function () {
+        var grid = document.getElementById("featured-grid");
+        var items = window.featuredProducts();
+        items.forEach(function (p) {
+          var card = document.createElement("article");
+          card.className = "product-card";
+          card.innerHTML =
+            '<a class="card-link" href="product.html?id=' +
+            encodeURIComponent(p.id) +
+            '">' +
+            '<div class="thumb"><img src="' +
+            p.image +
+            '" alt="" loading="lazy" width="800" height="900" /></div>' +
+            '<div class="meta"><h3 class="product-name">' +
+            escapeHtml(p.name) +
+            '</h3><p class="product-price">' +
+            window.formatPrice(p.price) +
+            "</p></div></a>";
+          grid.appendChild(card);
+        });
+
+        function escapeHtml(s) {
+          var d = document.createElement("div");
+          d.textContent = s;
+          return d.innerHTML;
+        }
+      })();
+    </script>
+  </body>
+</html>

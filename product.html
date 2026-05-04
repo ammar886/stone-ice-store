@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Product — Northwind Goods</title>
+    <meta name="description" content="Product details." />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <header class="site-header">
+        <div class="wrap inner">
+          <a class="logo" href="index.html">Northwind Goods</a>
+          <nav class="nav" aria-label="Primary">
+            <a href="index.html" data-nav>Home</a>
+            <a href="products.html" data-nav>Products</a>
+            <a href="about.html" data-nav>About</a>
+          </nav>
+        </div>
+      </header>
+
+      <main>
+        <div class="wrap">
+          <div id="product-root"></div>
+        </div>
+      </main>
+
+      <footer class="site-footer">
+        <div class="wrap inner">
+          <span>© Northwind Goods</span>
+          <a href="about.html">Contact</a>
+        </div>
+      </footer>
+    </div>
+
+    <script src="js/products.js"></script>
+    <script src="js/layout.js"></script>
+    <script>
+      (function () {
+        var params = new URLSearchParams(window.location.search);
+        var id = params.get("id");
+        var p = id ? window.getProductById(id) : null;
+        var root = document.getElementById("product-root");
+
+        if (!p) {
+          document.title = "Not found — Northwind Goods";
+          root.innerHTML =
+            '<div class="not-found">' +
+            "<p>We couldn’t find that product.</p>" +
+            '<a class="btn btn-primary" href="products.html">Back to products</a>' +
+            "</div>";
+          return;
+        }
+
+        document.title = p.name + " — Northwind Goods";
+
+        root.innerHTML =
+          '<article class="product-detail">' +
+          '<div class="gallery"><img src="' +
+          p.image +
+          '" alt="' +
+          escapeAttr(p.name) +
+          '" width="800" height="900" /></div>' +
+          '<div class="info">' +
+          "<h1>" +
+          escapeHtml(p.name) +
+          "</h1>" +
+          '<p class="price">' +
+          window.formatPrice(p.price) +
+          "</p>" +
+          '<p class="lead">' +
+          escapeHtml(p.blurb) +
+          "</p>" +
+          '<p class="body">' +
+          escapeHtml(p.description) +
+          "</p>" +
+          '<p style="margin-top:1.75rem"><a class="btn" href="products.html">← All products</a></p>' +
+          "</div></article>";
+
+        function escapeHtml(s) {
+          var d = document.createElement("div");
+          d.textContent = s;
+          return d.innerHTML;
+        }
+
+        function escapeAttr(s) {
+          return String(s)
+            .replace(/&/g, "&amp;")
+            .replace(/"/g, "&quot;")
+            .replace(/</g, "&lt;");
+        }
+      })();
+    </script>
+  </body>
+</html>
