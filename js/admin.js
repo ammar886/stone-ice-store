@@ -1,26 +1,73 @@
 (function () {
+  function getClient() {
+    return window.supabaseClient || null;
+  }
+
+  async function isAuthenticated() {
+    var client = getClient();
+    if (!client) return false;
+    var result = await client.auth.getSession();
+    return !!(result && result.data && result.data.session);
+  }
+
+  async function requireAuth() {
+    var ok = await isAuthenticated();
+    if (!ok) {
+      window.location.href = "admin-login.html";
+      return false;
+    }
+    return true;
+  }
+
   function escapeHtml(s) {
     var d = document.createElement("div");
     d.textContent = s;
     return d.innerHTML;
   }
 
-  function bindLoginPage() {
+  async function bindLoginPage() {
     var form = document.getElementById("admin-login-form");
     if (!form) return;
 
-    form.addEventListener("submit", function (event) {
+    if (await isAuthenticated()) {
+      window.location.href = "admin-dashboard.html";
+      return;
+    }
+
+    form.addEventListener("submit", async function (event) {
       event.preventDefault();
       var email = String(document.getElementById("admin-email").value || "").trim();
       var password = String(document.getElementById("admin-password").value || "");
       var error = document.getElementById("admin-login-error");
+      var button = form.querySelector('button[type="submit"]');
 
-      if (email && password) {
+      if (!email || !password) {
+        error.textContent = "Email and password are required.";
+        return;
+      }
+
+      var client = getClient();
+      if (!client) {
+        error.textContent = "Supabase client is not available.";
+        return;
+      }
+
+      error.textContent = "";
+      if (button) button.disabled = true;
+
+      var result = await client.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (button) button.disabled = false;
+
+      if (!result.error) {
         window.location.href = "admin-dashboard.html";
         return;
       }
 
-      error.textContent = "Email and password are required.";
+      error.textContent = result.error.message || "Login failed.";
     });
   }
 
@@ -55,9 +102,10 @@
     });
   }
 
-  function bindDashboardPage() {
+  async function bindDashboardPage() {
     var root = document.getElementById("admin-dashboard-page");
     if (!root) return;
+    if (!(await requireAuth())) return;
 
     var addBtn = document.getElementById("admin-add-product");
     if (addBtn) {
@@ -115,9 +163,10 @@
     renderDashboardTable();
   }
 
-  function bindAddProductPage() {
+  async function bindAddProductPage() {
     var form = document.getElementById("admin-add-form");
     if (!form) return;
+    if (!(await requireAuth())) return;
 
     form.addEventListener("submit", function (event) {
       event.preventDefault();
