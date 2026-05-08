@@ -43,7 +43,7 @@
     <script>
       (function () {
         var grid = document.getElementById("all-products");
-        (window.STORE_PRODUCTS || []).forEach(function (p) {
+        (window.getAllProducts ? window.getAllProducts() : window.STORE_PRODUCTS || []).forEach(function (p) {
           var card = document.createElement("article");
           card.className = "product-card";
           card.innerHTML =

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="layout" id="admin-dashboard-page">
+      <main>
+        <section class="admin-shell" style="padding-block: 2rem">
+          <div class="admin-card">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 1rem;
+                margin-bottom: 1rem;
+                flex-wrap: wrap;
+              "
+            >
+              <h1 class="admin-title" style="margin: 0">Admin Dashboard</h1>
+              <button id="admin-add-product" class="btn btn-primary" type="button">
+                Add New Product
+              </button>
+            </div>
+            <p class="admin-muted">List of all products with edit and delete actions.</p>
+            <div class="admin-table-wrap">
+              <table id="admin-products-table" class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Product Title</th>
+                    <th>Product Description</th>
+                    <th>Product Image</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-products-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/products.js"></script>
+    <script src="js/admin.js"></script>
+  </body>
+</html>

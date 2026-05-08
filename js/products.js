@@ -1,5 +1,5 @@
 /** Dummy catalog — shared across pages */
-window.STORE_PRODUCTS = [
+window.DEFAULT_STORE_PRODUCTS = [
   {
     id: "1",
     name: "Linen Throw",
@@ -81,3 +81,64 @@ window.STORE_PRODUCTS = [
     featured: false,
   },
 ];
+
+(function () {
+  function clone(value) {
+    return JSON.parse(JSON.stringify(value));
+  }
+
+  function nextId(products) {
+    var max = products.reduce(function (acc, p) {
+      var n = Number(p.id);
+      return Number.isFinite(n) && n > acc ? n : acc;
+    }, 0);
+    return String(max + 1);
+  }
+
+  window.STORE_PRODUCTS = clone(window.DEFAULT_STORE_PRODUCTS);
+
+  window.getAllProducts = function () {
+    return window.STORE_PRODUCTS;
+  };
+
+  window.addProduct = function (data) {
+    var products = window.STORE_PRODUCTS;
+    var newProduct = {
+      id: nextId(products),
+      name: data.name,
+      description: data.description,
+      blurb: data.description,
+      image: data.image,
+      price: Number(data.price) || 0,
+      featured: false,
+    };
+    products.push(newProduct);
+    return newProduct;
+  };
+
+  window.updateProduct = function (id, data) {
+    var products = window.STORE_PRODUCTS;
+    var index = products.findIndex(function (p) {
+      return String(p.id) === String(id);
+    });
+    if (index === -1) return null;
+
+    products[index] = {
+      id: products[index].id,
+      name: data.name,
+      description: data.description,
+      blurb: data.description,
+      image: data.image,
+      price: Number(data.price) || products[index].price || 0,
+      featured: !!products[index].featured,
+    };
+    return products[index];
+  };
+
+  window.deleteProduct = function (id) {
+    var nextProducts = window.STORE_PRODUCTS.filter(function (p) {
+      return String(p.id) !== String(id);
+    });
+    window.STORE_PRODUCTS = nextProducts;
+  };
+})();

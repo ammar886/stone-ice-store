@@ -31,14 +31,21 @@
     }).format(n);
   };
 
+  function sourceProducts() {
+    if (typeof window.getAllProducts === "function") {
+      return window.getAllProducts();
+    }
+    return window.STORE_PRODUCTS || [];
+  }
+
   window.getProductById = function (id) {
-    return (window.STORE_PRODUCTS || []).find(function (p) {
+    return sourceProducts().find(function (p) {
       return String(p.id) === String(id);
     });
   };
 
   window.featuredProducts = function () {
-    return (window.STORE_PRODUCTS || []).filter(function (p) {
+    return sourceProducts().filter(function (p) {
       return p.featured;
     });
   };

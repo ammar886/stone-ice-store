@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Admin Login</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <main>
+        <section class="admin-shell" style="padding-block: 3rem">
+          <div class="admin-card">
+            <h1 class="admin-title">Admin Login</h1>
+            <p class="admin-muted">Use email and password to access admin dashboard.</p>
+            <form id="admin-login-form" class="admin-form">
+              <label for="admin-email">
+                Email
+                <input id="admin-email" type="email" placeholder="admin@example.com" required />
+              </label>
+              <label for="admin-password">
+                Password
+                <input id="admin-password" type="password" placeholder="Enter password" required />
+              </label>
+              <button class="btn btn-primary" type="submit">Login</button>
+              <p id="admin-login-error" class="admin-muted" role="alert" style="color: #b00020"></p>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/products.js"></script>
+    <script src="js/admin.js"></script>
+  </body>
+</html>

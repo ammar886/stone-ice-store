@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Add Product</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="layout">
+      <main>
+        <section class="admin-shell" style="padding-block: 2rem">
+          <div class="admin-card">
+            <h1 class="admin-title">Add Product</h1>
+            <p class="admin-muted">Create a new product item for the catalog.</p>
+            <form id="admin-add-form" class="admin-form">
+              <label for="product-title">
+                Product Title
+                <input id="product-title" type="text" required />
+              </label>
+              <label for="product-description">
+                Product Description
+                <textarea id="product-description" required></textarea>
+              </label>
+              <label for="product-image">
+                Product Image
+                <input id="product-image" type="url" placeholder="https://example.com/image.jpg" required />
+              </label>
+              <div class="admin-actions">
+                <button class="btn btn-primary" type="submit">Add Product</button>
+                <a class="btn" href="admin-dashboard.html">Back to Dashboard</a>
+              </div>
+            </form>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="js/products.js"></script>
+    <script src="js/admin.js"></script>
+  </body>
+</html>
