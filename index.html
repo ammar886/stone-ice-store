@@ -6,6 +6,8 @@
     <title>Northwind Goods — Home</title>
     <meta name="description" content="Thoughtful everyday goods for calm spaces." />
     <link rel="stylesheet" href="css/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/app.js"></script>
   </head>
   <body>
     <div class="layout">
@@ -52,9 +54,24 @@
     <script src="js/products.js"></script>
     <script src="js/layout.js"></script>
     <script>
-      (function () {
+      (async function () {
         var grid = document.getElementById("featured-grid");
-        var items = window.featuredProducts();
+        var items = [];
+        try {
+          if (typeof window.getAllProducts === "function") {
+            await window.getAllProducts();
+          }
+          items = window.featuredProducts();
+        } catch (err) {
+          grid.innerHTML = '<p class="admin-muted">Unable to load products right now.</p>';
+          return;
+        }
+
+        if (!items.length) {
+          grid.innerHTML = '<p class="admin-muted">No products available yet.</p>';
+          return;
+        }
+
         items.forEach(function (p) {
           var card = document.createElement("article");
           card.className = "product-card";
@@ -67,9 +84,7 @@
             '" alt="" loading="lazy" width="800" height="900" /></div>' +
             '<div class="meta"><h3 class="product-name">' +
             escapeHtml(p.name) +
-            '</h3><p class="product-price">' +
-            window.formatPrice(p.price) +
-            "</p></div></a>";
+            "</h3></div></a>";
           grid.appendChild(card);
         });
 

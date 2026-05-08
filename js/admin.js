@@ -71,12 +71,24 @@
     });
   }
 
-  function renderDashboardTable() {
+  async function renderDashboardTable() {
     var body = document.getElementById("admin-products-body");
     if (!body) return;
 
-    var products = window.getAllProducts ? window.getAllProducts() : window.STORE_PRODUCTS || [];
+    var products = [];
+    try {
+      products = window.getAllProducts ? await window.getAllProducts() : window.STORE_PRODUCTS || [];
+    } catch (err) {
+      body.innerHTML =
+        '<tr><td colspan="4" class="admin-muted">Unable to load products from Supabase.</td></tr>';
+      return;
+    }
+
     body.innerHTML = "";
+    if (!products.length) {
+      body.innerHTML = '<tr><td colspan="4" class="admin-muted">No products found.</td></tr>';
+      return;
+    }
 
     products.forEach(function (product) {
       var tr = document.createElement("tr");
@@ -92,10 +104,10 @@
         '" alt="" /></td>' +
         '<td><div class="admin-actions">' +
         '<button class="btn" type="button" data-action="edit" data-id="' +
-        escapeHtml(product.id) +
+        escapeHtml(String(product.id)) +
         '">Edit</button>' +
         '<button class="btn" type="button" data-action="delete" data-id="' +
-        escapeHtml(product.id) +
+        escapeHtml(String(product.id)) +
         '">Delete</button>' +
         "</div></td>";
       body.appendChild(tr);
@@ -116,7 +128,7 @@
 
     var table = document.getElementById("admin-products-table");
     if (table) {
-      table.addEventListener("click", function (event) {
+      table.addEventListener("click", async function (event) {
         var target = event.target;
         if (!(target instanceof HTMLButtonElement)) return;
 
@@ -126,14 +138,22 @@
 
         if (action === "delete") {
           if (typeof window.deleteProduct === "function") {
-            window.deleteProduct(id);
-            renderDashboardTable();
+            var productToDelete = (window.STORE_PRODUCTS || []).find(function (p) {
+              return String(p.id) === String(id);
+            });
+            if (!productToDelete) return;
+            try {
+              await window.deleteProduct(productToDelete);
+              await renderDashboardTable();
+            } catch (err) {
+              window.alert("Failed to delete product.");
+            }
           }
           return;
         }
 
         if (action === "edit") {
-          var product = (window.getAllProducts ? window.getAllProducts() : []).find(function (p) {
+          var product = (window.STORE_PRODUCTS || []).find(function (p) {
             return String(p.id) === String(id);
           });
           if (!product) return;
@@ -149,18 +169,22 @@
           if (nextImage === null) return;
 
           if (typeof window.updateProduct === "function") {
-            window.updateProduct(id, {
-              name: nextTitle,
-              description: nextDescription,
-              image: nextImage,
-            });
-            renderDashboardTable();
+            try {
+              await window.updateProduct(product, {
+                name: nextTitle,
+                description: nextDescription,
+                image: nextImage,
+              });
+              await renderDashboardTable();
+            } catch (err) {
+              window.alert("Failed to update product.");
+            }
           }
         }
       });
     }
 
-    renderDashboardTable();
+    await renderDashboardTable();
   }
 
   async function bindAddProductPage() {
@@ -168,7 +192,7 @@
     if (!form) return;
     if (!(await requireAuth())) return;
 
-    form.addEventListener("submit", function (event) {
+    form.addEventListener("submit", async function (event) {
       event.preventDefault();
       var title = String(document.getElementById("product-title").value || "").trim();
       var description = String(document.getElementById("product-description").value || "").trim();
@@ -177,11 +201,16 @@
       if (!title || !description || !image) return;
 
       if (typeof window.addProduct === "function") {
-        window.addProduct({
-          name: title,
-          description: description,
-          image: image,
-        });
+        try {
+          await window.addProduct({
+            name: title,
+            description: description,
+            image: image,
+          });
+        } catch (err) {
+          window.alert("Failed to add product.");
+          return;
+        }
       }
 
       window.location.href = "admin-dashboard.html";

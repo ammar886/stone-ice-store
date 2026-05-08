@@ -6,6 +6,8 @@
     <title>Northwind Goods — Products</title>
     <meta name="description" content="Browse our full catalog." />
     <link rel="stylesheet" href="css/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/app.js"></script>
   </head>
   <body>
     <div class="layout">
@@ -41,9 +43,22 @@
     <script src="js/products.js"></script>
     <script src="js/layout.js"></script>
     <script>
-      (function () {
+      (async function () {
         var grid = document.getElementById("all-products");
-        (window.getAllProducts ? window.getAllProducts() : window.STORE_PRODUCTS || []).forEach(function (p) {
+        var items = [];
+        try {
+          items = window.getAllProducts ? await window.getAllProducts() : window.STORE_PRODUCTS || [];
+        } catch (err) {
+          grid.innerHTML = '<p class="admin-muted">Unable to load products right now.</p>';
+          return;
+        }
+
+        if (!items.length) {
+          grid.innerHTML = '<p class="admin-muted">No products available yet.</p>';
+          return;
+        }
+
+        items.forEach(function (p) {
           var card = document.createElement("article");
           card.className = "product-card";
           card.innerHTML =
@@ -55,9 +70,7 @@
             '" alt="" loading="lazy" width="800" height="900" /></div>' +
             '<div class="meta"><h3 class="product-name">' +
             escapeHtml(p.name) +
-            '</h3><p class="product-price">' +
-            window.formatPrice(p.price) +
-            "</p></div></a>";
+            "</h3></div></a>";
           grid.appendChild(card);
         });
 

@@ -32,9 +32,6 @@
   };
 
   function sourceProducts() {
-    if (typeof window.getAllProducts === "function") {
-      return window.getAllProducts();
-    }
     return window.STORE_PRODUCTS || [];
   }
 
@@ -45,8 +42,6 @@
   };
 
   window.featuredProducts = function () {
-    return sourceProducts().filter(function (p) {
-      return p.featured;
-    });
+    return sourceProducts().slice(0, 4);
   };
 })();
