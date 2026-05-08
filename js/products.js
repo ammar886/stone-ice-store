@@ -44,7 +44,7 @@
     if (!client) throw new Error("Supabase client is not available.");
 
     var result = await client.from("products").insert({
-      product_name: data.name,
+      product_title: data.name,
       product_description: data.description,
       product_thumbnail: data.image,
     });
